@@ -1,40 +1,38 @@
 package model;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
+
+    private Permissao permissao;
 
     private String nome;
     private String senha;
-    private ListaDuplamenteEncadeada lista;
-    private Pilha pilha;
 
-    public Usuario(String nome) {
+
+    public Usuario(String nome, String senha, Permissao permissao) {
+        this.permissao = permissao;
         this.nome = nome;
-        this.senha = ""; // ou crie lógica para solicitar senha
-        this.lista = new ListaDuplamenteEncadeada();
-        this.pilha = new Pilha();
+        this.senha = senha;
     }
 
     public String getNome() {
         return nome;
     }
 
+    public Permissao getPermissao() {
+        return permissao;
+    }
+
+    public void setPermissao(Permissao permissao) {
+        this.permissao = permissao;
+    }
+
     public String getSenha() {
         return senha;
     }
 
-    public void adicionarPost(Post post) {
-        lista.adicionar(post);
-        pilha.empilhar(post);
-    }
 
-    public void desfazer() {
-        if (!pilha.estaVazia()) {
-            pilha.desempilhar();
-            lista.removerUltimo();
-        }
-    }
 
-    public String obterPosts() {
-        return lista.listarComoTexto();
-    }
+
 }

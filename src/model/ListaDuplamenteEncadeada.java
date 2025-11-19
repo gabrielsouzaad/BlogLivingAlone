@@ -37,6 +37,38 @@ public class ListaDuplamenteEncadeada implements Serializable {
         fim = novo;
     }
 
+    public Post buscarPorTitulo(String titulo) {
+        No atual = inicio;
+        while (atual != null) {
+            if (atual.post.getTitulo().equals(titulo)) {
+                return atual.post;
+            }
+            atual = atual.proximo;
+        }
+        return null;
+    }
+
+    public void remover(Post post) {
+        No atual = inicio;
+        while (atual != null) {
+            if (atual.post.equals(post)) {
+                if (atual.anterior != null) {
+                    atual.anterior.proximo = atual.proximo;
+                } else {
+                    inicio = atual.proximo;
+                }
+
+                if (atual.proximo != null) {
+                    atual.proximo.anterior = atual.anterior;
+                } else {
+                    fim = atual.anterior;
+                }
+                return;
+            }
+            atual = atual.proximo;
+        }
+    }
+
     public Post removerUltimo() {
         if (fim == null)
             throw new NaoEncontradoException("Não há postagens para remover!");
@@ -55,6 +87,42 @@ public class ListaDuplamenteEncadeada implements Serializable {
 
     public boolean estaVazia() {
         return inicio == null;
+    }
+
+    public String listarPorCategoriaComoTexto(String categoria) {
+        StringBuilder sb = new StringBuilder();
+        No atual = inicio;
+
+        while (atual != null) {
+            if (atual.post.getCategoria().equalsIgnoreCase(categoria)) {
+                sb.append(atual.post.toString()).append("\n");
+            }
+            atual = atual.proximo;
+        }
+
+        if (sb.length() == 0) {
+            return "Nenhuma postagem encontrada na categoria: " + categoria;
+        }
+
+        return sb.toString();
+    }
+
+    public String listarPorAutorComoTexto(String autor) {
+        StringBuilder sb = new StringBuilder();
+        No atual = inicio;
+
+        while (atual != null) {
+            if (atual.post.getAutor().equalsIgnoreCase(autor)) {
+                sb.append(atual.post.toString()).append("\n");
+            }
+            atual = atual.proximo;
+        }
+
+        if (sb.length() == 0) {
+            return "Nenhuma postagem encontrada para o autor: " + autor;
+        }
+
+        return sb.toString();
     }
 
     public String listarComoTexto() {
