@@ -38,16 +38,16 @@ public class MenuList {
         System.out.print("Digite a categoria: ");
         String cat = sc.nextLine();
         System.out.println("\n----- Postagens da Categoria: " + cat + " -----");
-        System.out.println(blog.listarPorCategoria(cat));
+        System.out.println(blog.listarPostagensPorCategoria(cat));
     }
 
     public void listarMinhasPostagens(Usuario usuario, ServiceBlog blog) {
         System.out.println("\n----- Minhas Postagens -----");
-        System.out.println(blog.listarPorAutor(usuario.getNome()));
+        System.out.println(blog.listarPostagensPorAutor(usuario.getNome()));
     }
 
     public void desfazerUltimaPostagens(ServiceBlog blog) {
-        blog.desfazer();
+        blog.desfazerUltimaPostagem();
         System.out.println("Última postagem desfeita.");
     }
 
@@ -59,7 +59,7 @@ public class MenuList {
     public void adicionarComentario(Usuario usuario, ServiceBlog blog) {
         System.out.print("Título da postagem para comentar: ");
         String tituloComentar = sc.nextLine();
-        blog.BuscarPorTitulo(tituloComentar);
+        blog.buscarPostagensPorTitulo(tituloComentar);
         System.out.print("Seu comentário: ");
         String textoComentario = sc.nextLine();
         blog.adicionarComentario(tituloComentar, textoComentario, usuario);
@@ -69,12 +69,12 @@ public class MenuList {
     public void avaliarPost(Usuario usuario, ServiceBlog blog) {
         System.out.print("Título da postagem para avaliar: ");
         String tituloAvaliar = sc.nextLine();
-        blog.BuscarPorTitulo(tituloAvaliar);
+        blog.buscarPostagensPorTitulo(tituloAvaliar);
         System.out.print("Nota (1 a 5): ");
         int nota = Integer.parseInt(sc.nextLine());
         System.out.print("Comentário da avaliação (opcional): ");
         String comentarioAvaliacao = sc.nextLine();
-        blog.avaliarPost(tituloAvaliar, nota, comentarioAvaliacao, usuario);
+        blog.avaliarPostagens(tituloAvaliar, nota, comentarioAvaliacao, usuario);
         System.out.println("Avaliação adicionada com sucesso!");
     }
 
