@@ -1,8 +1,5 @@
 package application;
 
-import java.sql.SQLOutput;
-import java.util.Scanner;
-
 import exceptions.NaoEncontradoException;
 import exceptions.InvalidaException;
 import model.Login;
@@ -10,67 +7,69 @@ import model.Usuario;
 import model.MenuList;
 import service.ServiceBlog;
 import service.ServiceUsuario;
+import interfaces.services.IBlogService;
+import interfaces.services.IUsuarioService;
+import util.InputReader;
+import util.ConsolePrinter;
 
 public class Programa {
 
     public static void main(String[] args) {
-        try (Scanner sc = new Scanner(System.in)) {
-            ServiceBlog blog = new ServiceBlog();
-            ServiceUsuario usuarios = new ServiceUsuario();
-            MenuList menu = new MenuList();
-            Login login = new Login();
+        InputReader input = new InputReader();
+        ConsolePrinter out = new ConsolePrinter();
 
+        IBlogService blog = new ServiceBlog();
+        IUsuarioService usuarios = new ServiceUsuario();
+        MenuList menu = new MenuList(input, out);
+        Login login = new Login(usuarios, input);
 
-            System.out.println("----- LivingAlone -----");
-            System.out.println("Escolha a opção:");
-            System.out.println("1 - Logar");
-            System.out.println("2 - Criar");
-            System.out.println("3 - Sair");
+        Usuario usuario = null;
 
-            Usuario usuario = null;
+        for (;;) {
+            while (usuario == null) {
+                out.println("----- LivingAlone -----");
+                out.println("Escolha a opção:");
+                out.println("1 - Logar");
+                out.println("2 - Criar");
+                out.println("3 - Sair");
 
-            int menuInicial = Integer.parseInt(sc.nextLine());
+                int menuInicial = input.readIntInRange("Opção: ", 1, 3);
 
+                switch (menuInicial) {
+                    case 1:
+                        usuario = login.logar();
+                        break;
 
-            switch (menuInicial) {
-                case 1:
-                    var logar = login.logar();
-                    usuario = logar;
-                    break;
+                    case 2:
+                        usuario = login.registrar();
+                        break;
 
-                case 2:
-                    var registrar = login.registrar();
-                    usuario = registrar;
-                    break;
-
-                case 3:
-                    System.exit(0);
-                    break;
-
+                    case 3:
+                        out.println("Saindo da aplicação. Até logo!");
+                        System.exit(0);
+                        break;
+                }
             }
 
-            while (true) {
-                System.out.println("\n----- Menu Principal -----");
-                System.out.println("Usuário logado: " + usuario.getNome());
-                System.out.println("1 - Adicionar postagem");
-                System.out.println("2 - Remover postagem (apenas suas)");
-                System.out.println("3 - Listar todas as postagens");
-                System.out.println("4 - Listar postagens por categoria");
-                System.out.println("5 - Listar minhas postagens");
-                System.out.println("6 - Desfazer (última ação de postagem)");
-                System.out.println("7 - Listar categorias");
-                System.out.println("8 - Adicionar comentário a uma postagem");
-                System.out.println("9 - Avaliar postagem");
+            while (usuario != null) {
+                out.println("\n----- Menu Principal -----");
+                out.println("Usuário logado: " + usuario.getNome());
+                out.println("1 - Adicionar postagem");
+                out.println("2 - Remover postagem (apenas suas)");
+                out.println("3 - Listar todas as postagens");
+                out.println("4 - Listar postagens por categoria");
+                out.println("5 - Listar minhas postagens");
+                out.println("6 - Desfazer (última ação de postagem)");
+                out.println("7 - Listar categorias");
+                out.println("8 - Adicionar comentário a uma postagem");
+                out.println("9 - Avaliar postagem");
 
-                System.out.println("0 - Sair");
-                System.out.print("Opção: ");
+                out.println("0 - Deslogar");
 
-                int opcao = Integer.parseInt(sc.nextLine());
+                int opcao = input.readIntInRange("Opção: ", 0, 9);
 
                 try {
-
                     switch (opcao) {
-
                         case 1:
                             menu.adicionarPostagem(usuario, blog);
                             break;
@@ -108,18 +107,18 @@ public class Programa {
                             break;
 
                         case 0:
-                            System.exit(0);
+                            out.println("Deslogando...");
+                            usuario = null;
+                            break;
 
                         default:
-                            System.out.println("Opção inválida.");
+                            out.println("Opção inválida.");
                     }
 
                 } catch (RuntimeException e) {
-                    System.out.println("ERRO: " + e.getMessage());
+                    out.println("ERRO: " + e.getMessage());
                 }
             }
-        } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
         }
     }
 }
