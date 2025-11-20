@@ -1,9 +1,11 @@
 package application;
 
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 import exceptions.NaoEncontradoException;
 import exceptions.InvalidaException;
+import model.Login;
 import model.Usuario;
 import model.MenuList;
 import service.ServiceBlog;
@@ -12,40 +14,39 @@ import service.ServiceUsuario;
 public class Programa {
 
     public static void main(String[] args) {
-
         try (Scanner sc = new Scanner(System.in)) {
             ServiceBlog blog = new ServiceBlog();
             ServiceUsuario usuarios = new ServiceUsuario();
             MenuList menu = new MenuList();
+            Login login = new Login();
+
 
             System.out.println("----- LivingAlone -----");
+            System.out.println("Escolha a opção:");
+            System.out.println("1 - Logar");
+            System.out.println("2 - Criar");
+            System.out.println("3 - Sair");
 
             Usuario usuario = null;
 
-            while (usuario == null) {
-                System.out.print("Digite seu nome de usuário: ");
-                String nome = sc.nextLine();
+            int menuInicial = Integer.parseInt(sc.nextLine());
 
-                System.out.print("Digite sua senha: ");
-                String senha = sc.nextLine();
 
-                try {
-                    usuario = usuarios.login(nome, senha);
-                    System.out.println("Login realizado com sucesso!");
-                } catch (NaoEncontradoException e) {
-                    System.out.println("Usuário não encontrado. Deseja criar um novo usuário? (s/n)");
-                    String criar = sc.nextLine();
-                    if (criar.equalsIgnoreCase("s")) {
-                        try {
-                            usuario = usuarios.registrar(nome, senha);
-                            System.out.println("Usuário criado com sucesso!");
-                        } catch (RuntimeException ex) {
-                            System.out.println("ERRO ao registrar: " + ex.getMessage());
-                        }
-                    }
-                } catch (InvalidaException e) {
-                    System.out.println("ERRO de login: " + e.getMessage());
-                }
+            switch (menuInicial) {
+                case 1:
+                    var logar = login.logar();
+                    usuario = logar;
+                    break;
+
+                case 2:
+                    var registrar = login.registrar();
+                    usuario = registrar;
+                    break;
+
+                case 3:
+                    System.exit(0);
+                    break;
+
             }
 
             while (true) {
@@ -117,8 +118,8 @@ public class Programa {
                     System.out.println("ERRO: " + e.getMessage());
                 }
             }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
