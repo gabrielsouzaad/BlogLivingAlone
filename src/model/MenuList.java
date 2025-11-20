@@ -1,81 +1,74 @@
 package model;
 
-import java.util.Scanner;
-
-import service.ServiceBlog;
+import util.InputReader;
+import util.ConsolePrinter;
+import interfaces.services.IBlogService;
 
 public class MenuList {
-    Scanner sc = new Scanner(System.in);
+    private final InputReader input;
+    private final ConsolePrinter out;
 
-    public void adicionarPostagem(Usuario usuario, ServiceBlog blog) {
-        System.out.print("Título: ");
-        String titulo = sc.nextLine();
+    public MenuList(InputReader input, ConsolePrinter out) {
+        this.input = input;
+        this.out = out;
+    }
 
-        System.out.print("Conteúdo: ");
-        String conteudo = sc.nextLine();
-
-        System.out.print("Categoria: ");
-        String categoria = sc.nextLine();
+    public void adicionarPostagem(model.Usuario usuario, IBlogService blog) {
+        String titulo = input.readLine("Título: ");
+        String conteudo = input.readLine("Conteúdo: ");
+        String categoria = input.readLine("Categoria: ");
 
         blog.adicionarPostagem(titulo, conteudo, categoria, usuario);
-        System.out.println("Postagem adicionada com sucesso!");
+        out.println("Postagem adicionada com sucesso!");
     }
 
-    public void removerPostagem(Usuario usuario, ServiceBlog blog) {
-        System.out.print("Título da postagem a ser removida: ");
-        String tituloRemover = sc.nextLine();
-
+    public void removerPostagem(model.Usuario usuario, IBlogService blog) {
+        String tituloRemover = input.readLine("Título da postagem a ser removida: ");
         blog.removerPostagem(tituloRemover, usuario);
-        System.out.println("Postagem removida com sucesso!");
+        out.println("Postagem removida com sucesso!");
     }
 
-    public void listarPostagens(ServiceBlog blog) {
-        System.out.println("\n----- Todas as Postagens -----");
-        System.out.println(blog.listarPostagens());
+    public void listarPostagens(IBlogService blog) {
+        out.println("\n----- Todas as Postagens -----");
+        out.println(blog.listarPostagens());
     }
 
-    public void listarPostagensPorCategoria(ServiceBlog blog) {
-        System.out.print("Digite a categoria: ");
-        String cat = sc.nextLine();
-        System.out.println("\n----- Postagens da Categoria: " + cat + " -----");
-        System.out.println(blog.listarPostagensPorCategoria(cat));
+    public void listarPostagensPorCategoria(IBlogService blog) {
+        String cat = input.readLine("Digite a categoria: ");
+        out.println("\n----- Postagens da Categoria: " + cat + " -----");
+        out.println(blog.listarPostagensPorCategoria(cat));
     }
 
-    public void listarMinhasPostagens(Usuario usuario, ServiceBlog blog) {
-        System.out.println("\n----- Minhas Postagens -----");
-        System.out.println(blog.listarPostagensPorAutor(usuario.getNome()));
+    public void listarMinhasPostagens(model.Usuario usuario, IBlogService blog) {
+        out.println("\n----- Minhas Postagens -----");
+        out.println(blog.listarPostagensPorAutor(usuario.getNome()));
     }
 
-    public void desfazerUltimaPostagens(ServiceBlog blog) {
+    public void desfazerUltimaPostagens(IBlogService blog) {
         blog.desfazerUltimaPostagem();
-        System.out.println("Última postagem desfeita.");
+        out.println("Última postagem desfeita.");
     }
 
-    public void listarCategorias(ServiceBlog blog) {
-        System.out.println("\n----- Categorias Disponíveis -----");
-        System.out.println(blog.listarCategorias());
+    public void listarCategorias(IBlogService blog) {
+        out.println("\n----- Categorias Disponíveis -----");
+        out.println(blog.listarCategorias());
     }
 
-    public void adicionarComentario(Usuario usuario, ServiceBlog blog) {
-        System.out.print("Título da postagem para comentar: ");
-        String tituloComentar = sc.nextLine();
+    public void adicionarComentario(model.Usuario usuario, IBlogService blog) {
+        String tituloComentar = input.readLine("Título da postagem para comentar: ");
         blog.buscarPostagensPorTitulo(tituloComentar);
-        System.out.print("Seu comentário: ");
-        String textoComentario = sc.nextLine();
+        String textoComentario = input.readLine("Seu comentário: ");
         blog.adicionarComentario(tituloComentar, textoComentario, usuario);
-        System.out.println("Comentário adicionado com sucesso!");
+        out.println("Comentário adicionado com sucesso!");
     }
 
-    public void avaliarPost(Usuario usuario, ServiceBlog blog) {
-        System.out.print("Título da postagem para avaliar: ");
-        String tituloAvaliar = sc.nextLine();
+    public void avaliarPost(model.Usuario usuario, IBlogService blog) {
+        String tituloAvaliar = input.readLine("Título da postagem para avaliar: ");
         blog.buscarPostagensPorTitulo(tituloAvaliar);
-        System.out.print("Nota (1 a 5): ");
-        int nota = Integer.parseInt(sc.nextLine());
-        System.out.print("Comentário da avaliação (opcional): ");
-        String comentarioAvaliacao = sc.nextLine();
+        int nota = input.readIntInRange("Nota (1 a 5): ", 1, 5);
+        String comentarioAvaliacao = input.readLine("Comentário da avaliação (opcional): ");
         blog.avaliarPostagens(tituloAvaliar, nota, comentarioAvaliacao, usuario);
-        System.out.println("Avaliação adicionada com sucesso!");
+        out.println("Avaliação adicionada com sucesso!");
     }
 
 }

@@ -1,52 +1,46 @@
 package model;
+
 import exceptions.InvalidaException;
 import model.Usuario;
-import service.ServiceUsuario;
-
-import java.util.Scanner;
+import interfaces.services.IUsuarioService;
+import util.InputReader;
+import util.ConsolePrinter;
 
 public class Login {
-    Scanner sc = new Scanner(System.in);
-    Usuario usuario = null;
-    ServiceUsuario usuarios = new ServiceUsuario();
+    private final InputReader input;
+    private final IUsuarioService usuarios;
+    private final ConsolePrinter out = new ConsolePrinter();
 
+    public Login(IUsuarioService usuarios, InputReader input) {
+        this.usuarios = usuarios;
+        this.input = input;
+    }
 
-    public Usuario logar()
-    {
-        System.out.println("Digite seu nome:");
-        String nome = sc.nextLine();
-        if(nome == null || nome.isEmpty())
-        {
-            throw new InvalidaException(" por favor digite um nome ");
+    public Usuario logar() {
+        String nome = input.readLine("Digite seu nome: ");
+        if (nome == null || nome.isEmpty()) {
+            throw new InvalidaException("Por favor digite um nome.");
         }
-        System.out.println("Digite sua senha:");
-        String senha = sc.nextLine();
-        if(senha == null || senha.isEmpty())
-        {
-            throw new InvalidaException(" por favor digite um nome ");
+        String senha = input.readLine("Digite sua senha: ");
+        if (senha == null || senha.isEmpty()) {
+            throw new InvalidaException("Por favor digite uma senha.");
         }
-        usuario = usuarios.login(nome, senha);
-        System.out.println("Login realizado com sucesso!");
-
+        Usuario usuario = usuarios.login(nome, senha);
+        out.println("Login realizado com sucesso!");
         return usuario;
     }
 
-    public Usuario registrar(){
-        System.out.println("Digite seu nome:");
-        String nome = sc.nextLine();
-        if(nome == null || nome.isEmpty())
-        {
-            throw new InvalidaException(" por favor digite um nome ");
+    public Usuario registrar() {
+        String nome = input.readLine("Digite seu nome: ");
+        if (nome == null || nome.isEmpty()) {
+            throw new InvalidaException("Por favor digite um nome.");
         }
-        System.out.println("Digite sua senha:");
-        String senha = sc.nextLine();
-        if(senha == null || senha.isEmpty())
-        {
-            throw new InvalidaException(" por favor digite um nome ");
+        String senha = input.readLine("Digite sua senha: ");
+        if (senha == null || senha.isEmpty()) {
+            throw new InvalidaException("Por favor digite uma senha.");
         }
-        usuario = usuarios.registrar(nome, senha);
-        System.out.println("Usuário criado com sucesso!");
-
+        Usuario usuario = usuarios.registrar(nome, senha);
+        out.println("Usuário criado com sucesso!");
         return usuario;
     }
 }
